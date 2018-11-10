@@ -1,0 +1,45 @@
+version: '3.5'
+services:
+   wp:     
+     image: wordpress:latest
+     container_name: "wp"
+     volumes:
+       - ./wp-app:/var/www/html
+     ports:
+       - "6633:80"
+     restart: always
+     depends_on:
+       - wp-mysql
+     environment:
+       WORDPRESS_DB_HOST: wp-mysql:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: my_wordpress_db_password
+     networks:
+       wp-network:
+        ipv4_address: "172.22.1.10"
+
+   wp-mysql:
+     image: mysql:5.7
+     container_name: "wp-mysql"
+     volumes:
+       - ./db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: my_db_root_password
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: my_wordpress_db_password
+     networks:
+       wp-network:
+        ipv4_address: "172.22.1.20"
+
+volumes:
+    wordpress_files:
+    db_data:
+
+networks:
+    wp-network:
+      driver: "bridge"
+      ipam:
+        config:
+          - subnet: "172.22.0.0/16"      
