@@ -4,6 +4,7 @@ services:
      image: wordpress:latest
      container_name: "wp"
      volumes:
+       - ./config/php.conf.uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
        - ./wp-app:/var/www/html
      ports:
        - "6633:80"
